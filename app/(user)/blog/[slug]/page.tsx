@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FiChevronsLeft } from "react-icons/fi";
-import {PortableTextBlock} from "@portabletext/types";
+import { PortableTextBlock } from "@portabletext/types";
 import placeholder from "@/public/placeholder.webp";
 interface BlogPostProps {
   params: {
@@ -15,7 +15,7 @@ interface BlogPostProps {
   };
 }
 
-// export const revalidate = 3600; // revalidate page every 60 seconds
+export const revalidate = 3600; // revalidate page every 60 seconds
 
 export async function generateStaticParams() {
   const query = groq`
@@ -24,11 +24,10 @@ export async function generateStaticParams() {
   }
  `;
 
-  const slugs:Post[] = await sanityClient.fetch(query);
+  const slugs: Post[] = await sanityClient.fetch(query);
   const slugRoutes = slugs.map((slug) => slug.slug.current);
 
   return slugRoutes.map((slug) => ({ slug }));
-
 }
 
 const BlogPost = async ({ params: { slug } }: BlogPostProps) => {
@@ -45,7 +44,9 @@ const BlogPost = async ({ params: { slug } }: BlogPostProps) => {
     <article className="px-4">
       <section className="mb-12">
         <Image
-          src={post?.mainImage && urlFor(post?.mainImage).url() || placeholder}
+          src={
+            (post?.mainImage && urlFor(post?.mainImage).url()) || placeholder
+          }
           width={600}
           height={1000}
           alt={post?.title}
@@ -87,7 +88,11 @@ const BlogPost = async ({ params: { slug } }: BlogPostProps) => {
             <div className="flex flex-row items-center">
               <div className="w-24 h-24 rounded-lg overflow-hidden hidden md:flex">
                 <Image
-                  src={post?.author?.image && urlFor(post?.author?.image).url() || placeholder}
+                  src={
+                    (post?.author?.image &&
+                      urlFor(post?.author?.image).url()) ||
+                    placeholder
+                  }
                   width={100}
                   height={100}
                   alt={post?.author?.name}
@@ -96,7 +101,9 @@ const BlogPost = async ({ params: { slug } }: BlogPostProps) => {
               <div className="flex flex-col ml-4">
                 <h3 className="text-xl font-bold">{post?.author?.name}</h3>
                 <PortableText
-                  value={post?.author?.bio as PortableTextBlock[] | PortableTextBlock}
+                  value={
+                    post?.author?.bio as PortableTextBlock[] | PortableTextBlock
+                  }
                   components={RichTextComponents}
                 />
               </div>
